@@ -1,12 +1,13 @@
+require('dotenv').config(); // .env 파일 로드
 const AWS = require('aws-sdk');
 const fs = require('fs');
 const path = require('path');
 
-// AWS 자격 증명 설정 (환경변수 or 프로파일로도 가능)
+// AWS 자격 증명 및 리전 설정
 AWS.config.update({
-  region: 'ap-northeast-2', // 서울 리전
-  accessKeyId: '본인키',
-  secretAccessKey: '본인키'
+  region: process.env.AWS_REGION,
+  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
 });
 
 const rekognition = new AWS.Rekognition();

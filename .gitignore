@@ -7,7 +7,6 @@
 /Exercises
 /input*
 /output*
-
 edumgt-key
 /.venv
 /zeroscope-env
@@ -15,3 +14,4 @@ edumgt-key
 /Y*
 /n*
 *.csv
+.env
