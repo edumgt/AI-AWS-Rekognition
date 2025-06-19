@@ -11,9 +11,9 @@ AWS.config.update({
 });
 
 const rekognition = new AWS.Rekognition();
-
+ 
 // 이미지 파일 로딩
-const imageBytes = fs.readFileSync(path.resolve(__dirname, 'image.png'));
+const imageBytes = fs.readFileSync(path.resolve(__dirname, 'sample.png'));
 
 // Rekognition API 호출
 const params = {

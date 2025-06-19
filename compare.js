@@ -9,7 +9,7 @@ AWS.config.update({
   accessKeyId: process.env.AWS_ACCESS_KEY_ID,
   secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
 });
-
+ 
 const rekognition = new AWS.Rekognition();
 
 // 비교할 얼굴 이미지 파일 목록
