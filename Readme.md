@@ -1,6 +1,16 @@
 ## 학습자료 공유 드립니다.
 ## 6월16일 자료 동영상 입니다. Google TTS - mp3 에 Python Capture 만들어서 mp4 + mp3 병합한 파일 입니다.
 
+## Email List
+ zenki1025@naver.com
+ charlie7428@naver.com
+ ksminfor23@gmail.com
+ pipie314@protonmail.com
+ ky000612@gmail.com
+ tb0415266@gmail.com
+ suhyeoko2@gmail.com
+
+
 ## 수업 주 내용은 AWS AI 서비스 중 Chapter 2 ~ 3 입니다. 해당 수업을 위한 AWS 리소스는 아래와 같습니다.
 ## 6월23일 ~ 24일 강의 리소스 목록과 그 내용 중 교재 연결 페이지 입니다.
 ## IAM - AWS 인프라구축가이드 중 127페이지
