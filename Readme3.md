@@ -2,7 +2,7 @@
 ![alt text](image-13.png)
 
 ## 버킷 정책(Bucket Policy)이 퍼블릭을 허용하는지 확인 
-## aws s3api put-bucket-policy --bucket edumgt-bucket-0001 --policy file://bucket.json
+## aws s3api put-bucket-policy --bucket edumgt-bucket-20250619 --policy file://bucket.json
 
 ## 결과
 ![alt text](image-14.png)
@@ -118,7 +118,6 @@ Parameter validation failed:
 Unknown parameter in LifecycleConfiguration.Rules[0].Expiration: "Day", must be one of: Date, Days, ExpiredObjectDeleteMarker 
 
 ## "Day" --> Days
-
 
 ## Expire 날짜 직접 지정 시 유의점
  1. S3 Lifecycle은 즉시 삭제하지 않습니다

@@ -7,8 +7,8 @@
             },
             "Status": "Enabled",
             "Expiration": {
-                "Date": "2025-06-01T00:00:00Z"
-            }
+                "Days": 1
+           }
         }
     ]
 }
