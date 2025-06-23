@@ -1,0 +1,14 @@
+{
+    "Rules": [
+        {
+            "ID": "AutoDeleteAfter1Days",
+            "Filter": {
+                "Prefix": ""
+            },
+            "Status": "Enabled",
+            "Expiration": {
+                "Date": "2025-06-01T00:00:00Z"
+            }
+        }
+    ]
+}

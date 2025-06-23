@@ -78,3 +78,50 @@ aws s3api get-bucket-policy-status --bucket my-bucket-name
 # ACL 확인
 aws s3api get-bucket-acl --bucket my-bucket-name
 aws s3api get-object-acl --bucket my-bucket-name --key your-file.jpg
+
+## 파일 삭제 기한 생성 - 객체 아카이브 또는 지정된 기간이 지난 후 객체 삭제
+![alt text](image-15.png)
+
+![alt text](image-16.png)
+
+객체 삭제 주기 Day 설정
+
+## AWS Cli 로 설정
+aws s3api put-bucket-lifecycle-configuration --bucket edumgt-bucket-0001 --lifecycle-configuration file://delete.json
+
+## 결과
+{
+    "TransitionDefaultMinimumObjectSize": "all_storage_classes_128K"
+}
+
+![alt text](image-17.png)
+![alt text](image-18.png)
+
+## json 의 삭제 주기
+{
+  "Rules": [
+    {
+      "ID": "AutoDeleteAfter1Days",
+      "Filter": {
+        "Prefix": ""
+      },
+      "Status": "Enabled",
+      "Expiration": {
+        "Days": 1
+      }
+    }
+  ]
+}
+
+## Error
+Parameter validation failed:
+Unknown parameter in LifecycleConfiguration.Rules[0].Expiration: "Day", must be one of: Date, Days, ExpiredObjectDeleteMarker 
+
+## "Day" --> Days
+
+
+## Expire 날짜 직접 지정 시 유의점
+ 1. S3 Lifecycle은 즉시 삭제하지 않습니다
+S3는 비동기적으로 Lifecycle Rule을 실행합니다.
+일반적으로 대상 날짜가 도달한 후 최대 24~48시간 이내에 삭제되며, 정확한 시간 보장은 없습니다.
+백엔드에서 AWS의 내부 스케줄러가 주기적으로 해당 규칙을 평가하며 처리합니다.
