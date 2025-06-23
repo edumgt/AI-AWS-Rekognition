@@ -54,4 +54,15 @@
 
 ## https://awscli.amazonaws.com/AWSCLIV2.msi
 
+![alt text](image-12.png)
 
+
+## 인증 처리
+AWS CLI 초기 설정
+설치 후 아래 명령어로 자격 증명 입력
+
+aws configure
+입력 항목:
+AWS Access Key ID: AKIA...
+AWS Secret Access Key: wJalrXUtn...
+Default region name: ap-northeast-2 (서울 리전)
