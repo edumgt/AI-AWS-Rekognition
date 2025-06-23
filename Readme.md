@@ -66,3 +66,6 @@ aws configure
 AWS Access Key ID: AKIA...
 AWS Secret Access Key: wJalrXUtn...
 Default region name: ap-northeast-2 (서울 리전)
+
+## 목록 보기
+aws configure list
