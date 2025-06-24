@@ -3,7 +3,7 @@
 
 ## Email List
  zenki1025@naver.com
- charlie7428@naver.com
+ jigyuseon@gmail.com
  ksminfor23@gmail.com
  pipie314@protonmail.com
  ky000612@gmail.com
