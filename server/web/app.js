@@ -34,8 +34,20 @@ function parseRequestBody(req) {
 }
 
 function parseLambdaPayload(response) {
-  const payload = response.Payload ? JSON.parse(response.Payload) : {};
-  return payload.body ? JSON.parse(payload.body) : payload;
+  const payloadText = response.Payload ? Buffer.from(response.Payload).toString('utf-8') : '{}';
+  const payload = payloadText ? JSON.parse(payloadText) : {};
+  const body = payload.body ? JSON.parse(payload.body) : payload;
+
+  return {
+    statusCode: Number(payload.statusCode || 200),
+    body,
+  };
+}
+
+function buildLambdaEvent(body) {
+  return {
+    body: JSON.stringify(body),
+  };
 }
 
 function serveStatic(req, res) {
@@ -71,15 +83,16 @@ const server = http.createServer(async (req, res) => {
         .invoke({
           FunctionName: compareFunctionName,
           InvocationType: 'RequestResponse',
-          Payload: JSON.stringify({
+          Payload: JSON.stringify(buildLambdaEvent({
             sourceImageBase64: body.sourceImageBase64,
             targetImageBase64: body.targetImageBase64,
             similarityThreshold: Number(body.similarityThreshold || 80),
-          }),
+          })),
         })
         .promise();
 
-      return sendJson(res, 200, parseLambdaPayload(response));
+      const lambdaResult = parseLambdaPayload(response);
+      return sendJson(res, lambdaResult.statusCode, lambdaResult.body);
     }
 
     if (req.method === 'POST' && req.url === '/api/extract-text') {
@@ -92,11 +105,12 @@ const server = http.createServer(async (req, res) => {
         .invoke({
           FunctionName: textFunctionName,
           InvocationType: 'RequestResponse',
-          Payload: JSON.stringify({ imageBase64: body.imageBase64 }),
+          Payload: JSON.stringify(buildLambdaEvent({ imageBase64: body.imageBase64 })),
         })
         .promise();
 
-      return sendJson(res, 200, parseLambdaPayload(response));
+      const lambdaResult = parseLambdaPayload(response);
+      return sendJson(res, lambdaResult.statusCode, lambdaResult.body);
     }
 
     serveStatic(req, res);
