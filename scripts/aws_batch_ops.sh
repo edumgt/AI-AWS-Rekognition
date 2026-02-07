@@ -176,7 +176,7 @@ upsert_lambda() {
       --runtime "${LAMBDA_RUNTIME}" \
       --timeout "${LAMBDA_TIMEOUT}" \
       --memory-size "${LAMBDA_MEMORY_SIZE}" \
-      --environment "Variables={AWS_REGION=${AWS_REGION},S3_BUCKET_NAME=${BUCKET_NAME}}" >/dev/null
+      --environment "Variables={S3_BUCKET_NAME=${BUCKET_NAME}}" >/dev/null
   else
     if [[ -z "${LAMBDA_ROLE_ARN}" ]]; then
       echo "LAMBDA_ROLE_ARN is required to create a new Lambda function." >&2
@@ -192,7 +192,7 @@ upsert_lambda() {
       --timeout "${LAMBDA_TIMEOUT}" \
       --memory-size "${LAMBDA_MEMORY_SIZE}" \
       --zip-file "fileb://${zip_file}" \
-      --environment "Variables={AWS_REGION=${AWS_REGION},S3_BUCKET_NAME=${BUCKET_NAME}}" >/dev/null
+      --environment "Variables={S3_BUCKET_NAME=${BUCKET_NAME}}" >/dev/null
   fi
 }
 

@@ -101,10 +101,38 @@ npm run extract
 
 최초 생성 시 `LAMBDA_ROLE_ARN`이 필요합니다.
 
+```
+cat > trust-lambda.json <<'JSON'
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": { "Service": "lambda.amazonaws.com" },
+      "Action": "sts:AssumeRole"
+    }
+  ]
+}
+JSON
+```
+---
+```
+aws iam create-role \
+  --role-name rekognition-lambda-role \
+  --assume-role-policy-document file://trust-lambda.json
+```
+```
+aws iam attach-role-policy \
+  --role-name rekognition-lambda-role \
+  --policy-arn arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+```
+
+---
+
 ```bash
 export AWS_REGION=ap-northeast-2
 export S3_BUCKET_NAME=polly-bucket-edumgt
-export LAMBDA_ROLE_ARN=arn:aws:iam::1234********:role/rekognition-lambda-role
+export LAMBDA_ROLE_ARN=arn:aws:iam::086015456585:role/rekognition-lambda-role
 
 ./scripts/aws_batch_ops.sh lambda-deploy
 ```

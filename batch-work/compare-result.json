@@ -1,0 +1,1 @@
+{"statusCode":200,"body":"{\"message\":\"Face similarity analysis completed\",\"comparedCount\":0,\"comparisons\":[],\"missing\":[\"face1.png\",\"face2.png\",\"face3.png\",\"face4.png\"]}"}

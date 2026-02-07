@@ -1,0 +1,11 @@
+{
+  "Rules": [
+    {
+      "ID": "ExpireTrainingObjects",
+      "Filter": {"Prefix": "training/"},
+      "Status": "Enabled",
+      "Expiration": {"Days": 30},
+      "AbortIncompleteMultipartUpload": {"DaysAfterInitiation": 7}
+    }
+  ]
+}
