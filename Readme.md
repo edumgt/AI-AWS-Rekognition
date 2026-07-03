@@ -11,7 +11,82 @@
 
 ---
 
+# AWS Rekognition 기반 주식투자 및 자산운용 AI 시스템 활용 기획서
 
+본 문서는 AWS Rekognition의 컴퓨터 비전(Image & Video Analysis) 기술을 주식 투자 및 자산운용 시스템에 접목하여 대안 데이터 수집, 리스크 관리, 보안 및 컴플라이언스를 강화하기 위한 활용 방안을 다룹니다.
+
+---
+
+## 1. 대안 데이터(Alternative Data) 수집을 통한 시장 예측
+전통적인 재무제표 데이터를 넘어, 현실 세계의 시각적 데이터를 실시간으로 분석하여 기업의 미래 실적과 시장 트렌드를 예측합니다.
+
+* **위성 및 드론 이미지 분석 (`Label Detection`)**
+    * **유통/소매업 실적 예측:** 대형 마트, 쇼핑몰 주차장의 차량 대수를 주기적으로 추적·분석하여 분기 매출을 선행 예측합니다.
+    * **원자재 및 물류 동향 파악:** 정유 공장의 원유 저장 탱크 탑(Floating Roof Tank) 높이를 통해 원유 재고량을 파악하거나, 항만의 컨테이너 물동량을 분석하여 글로벌 공급망 호황 여부를 진단합니다.
+* **소셜 미디어 및 뉴스 비디오 분석 (`Object & Scene Detection`)**
+    * **신제품 모멘텀 포착:** 유튜브, 틱톡, 인스타그램 등 영상 플랫폼에서 특정 신제품(신형 스마트폰, 신차, 인기 화장품 등)이 노출되는 빈도와 대중의 반응을 감지하여 관련 주가의 상승 모멘텀을 선제적으로 포착합니다.
+      → **구현:** `lambda/productMomentumHandler.js` (`Rekognition DetectLabels` 기반). 자세한 사용법은 아래 "4-1) 웹 프론트엔드 모듈 실행" 섹션의 "3) 신제품 노출 모멘텀 분석" 항목을 참고하세요.
+
+---
+
+## 2. 미디어 분석을 통한 감성 분석(Sentiment Analysis) 및 리스크 관리
+경영진의 비언어적 표현이나 뉴스 속 분위기 등 비정형 시각 데이터를 데이터화하여 투자 의사결정에 활용합니다.
+
+* **경영진 및 전문가 감정 분석 (`Emotion Detection`)**
+    * **기업 숨은 리스크 감지:** 주요 기업 CEO의 IR 발표, 기자회견, 청문회 영상을 분석합니다. 발표자의 미세한 표정 변화(불안, 당황, 자신감 등)와 입술 떨림 등을 감지하여 실적 발표의 신뢰도나 기업의 숨겨진 리스크를 정량화합니다.
+* **뉴스 및 방송 텍스트 실시간 추출 (`Text in Image/Video`)**
+    * **초고속 속보 데이터베이스화:** 경제 방송 스크린 하단에 흐르는 자막(Ticker)이나 실시간 도표 내의 숫자 정보를 추출합니다. 이를 자연어 처리(NLP) 엔진과 연동하여 뉴스 리포트보다 빠르게 시장 충격 요인을 데이터화합니다.
+
+---
+
+## 3. 기업 브랜드 노출도 검출 (Brand & Logo Detection)
+글로벌 미디어 내에서 특정 기업의 브랜드가 노출되는 빈도와 시간을 측정하여 마케팅 ROI 및 브랜드 가치를 평가합니다.
+
+* **스포츠 마케팅 및 스폰서십 효과 측정**
+    * EPL, NFL, 올림픽 등 대형 스포츠 경기 영상에서 특정 기업의 로고가 노출되는 스크린 타임을 자동 계산하여, 마케팅 효율성을 가늠하고 주가에 미칠 지표로 활용합니다.
+* **엔터테인먼트/콘텐츠 투자 가치 평가**
+    * 넷플릭스 등 OTT 드라마나 영화 속 PPL 제품 노출을 추적하여, 콘텐츠 흥행에 따른 직접적인 수혜주(수출 증가, 브랜드 인지도 상승 등)를 발굴하는 퀀트 알고리즘에 대입합니다.
+
+---
+
+## 4. 자산운용사 내부 보안 및 컴플라이언스 강화
+자산운용 시스템 자체의 데이터 신뢰도를 높이고 내부 통제 시스템을 고도화합니다.
+
+* **부적절한 콘텐츠 자동 차단 (`Content Moderation`)**
+    * 투자 커뮤니티나 리서치 플랫폼 내 유저가 업로드하는 이미지 중 딥페이크 사기 그래픽, 성인물, 폭력성 이미지 등을 자동으로 필터링하여 플랫폼의 신뢰도를 유지합니다.
+* **트레이딩 룸 보안 및 이상 행동 감지 (`Custom Labels`)**
+    * 보안이 극도로 중요한 트레이딩 룸 내부 CCTV와 연동합니다. 인가되지 않은 행동(예: 모니터 화면을 스마트폰으로 촬영하는 행위, 허가되지 않은 인원의 접근)을 Custom Labels로 학습시켜 실시간으로 경고를 발생시킵니다.
+
+---
+
+## 5. 시스템 아키텍처 파이프라인 (추천 조합)
+
+AWS Rekognition의 기능을 극대화하기 위해 아래와 같이 AWS의 타 서비스와 파이프라인을 구축하는 것을 권장합니다.
+
+---
+
+## 기술 스택 (Tech Stack)
+
+`doc/` 폴더의 11개 챕터 커리큘럼과 `docker/video-pathing` 모듈에서 실제로 사용하는 기술을 아래와 같이 하나로 정리했습니다.
+
+| 영역 | 기술/서비스 | 이 저장소에서의 쓰임 | 관련 커리큘럼 |
+|---|---|---|---|
+| 클라우드 계정/보안 기초 | AWS Organizations, Region/AZ, Root Account, MFA, Billing Alert | 계정 구조 이해 및 초기 보안 설정 | Chapter01 |
+| IAM 권한 설계 | IAM Policy(JSON), User/Group/Role, Allow/Deny 평가, Access Analyzer | 최소 권한 원칙에 따른 Lambda 실행 Role, S3 접근 권한 설계 | Chapter02, [부록: Principal/AssumeRole](#원문-readme4md--iam-핵심-개념-정리-principal-vs-assumerole) |
+| CLI 자동화 | AWS CLI v2, named profile, `--query`(JMESPath), `--output table` | `scripts/aws_batch_ops.sh`, `backup_all_lambdas.sh` 전 구간 | Chapter03 |
+| 스토리지 | Amazon S3, SSE-S3 암호화, Lifecycle(Expiration), 퍼블릭 액세스 차단, 버전관리 | 실습 이미지/학습 데이터 저장(`training/`), 자동 만료 정책 | Chapter04, [부록: S3 퍼블릭/Lifecycle](#원문-readme3md--s3-퍼블릭-접근--lifecycle-실습-정리) |
+| 런타임/SDK | Node.js 18+, npm, dotenv, `aws-sdk`(v2) | `server/` 전체(로컬 CLI, Lambda 핸들러, 웹 서버) | Chapter05 |
+| 컴퓨터 비전 AI | Amazon Rekognition — `DetectText`, `CompareFaces`, `DetectLabels`(Object & Scene Detection), Custom Labels, Face Collection(`IndexFaces`/`SearchFacesByImage`) | 얼굴 비교, 텍스트 추출, 신제품 노출 모멘텀 분석, 도메인 Fine-tuning | Chapter06, Chapter07, Chapter11 |
+| 서버리스 컴퓨팅 | AWS Lambda(`nodejs18.x`), API Gateway 연동 | `server/lambda/*Handler.js` 배포 및 웹 데모 `_mode=lambda` 호출 | Chapter07, Chapter08 |
+| 운영 자동화 | Bash(`set -euo pipefail`), `aws s3 sync/cp/rm`, idempotent 배포, cron/CI 연동 | `scripts/aws_batch_ops.sh`(init/upload/deploy/invoke/report) | Chapter08 |
+| 모니터링/비용/보안 | CloudWatch, CloudTrail, AWS Budgets, Access Key Rotation | Lambda 로그 확인, 비용 통제, 자격증명 점검 체크리스트 | Chapter09 |
+| 프로젝트/문서화 | Mermaid 다이어그램, 아키텍처 문서, 통합 테스트 전략 | `doc/node-entry-flow.md`(진입점 흐름도), 최종 프로젝트 로드맵 | Chapter10 |
+| 영상 객체 추적(대체 서비스) | Python, Docker(PyTorch CUDA 런타임), FastAPI, Uvicorn, YOLOv9, ByteTrack(`supervision`), OpenCV(`opencv-python-headless`), NumPy | Rekognition Video People Pathing 대체 — `docker/video-pathing` | `docker/video-pathing/README.md` |
+| Python 포팅 모듈 | Python 3.12, `boto3`, FastAPI, Uvicorn, `python-dotenv`, Docker | `server/`(Node.js)와 동일한 기능(얼굴 비교/텍스트 추출/신제품 모멘텀 분석/Face Collection/Custom Labels)의 Python 버전 — `server-py/` | `server-py/README.md` |
+
+> 챕터별 상세 학습 목표/실습 커리큘럼 전문은 `doc/README.md`(인덱스)와 `doc/Chapter01~11/`에서 확인할 수 있습니다.
+
+---
 ## 문서 맵 (빠른 이동)
 
 실습 목적에 따라 아래 문서를 함께 참고하세요.
@@ -19,6 +94,7 @@
 - `DOC/README.md`: 11개 챕터 커리큘럼 인덱스
 - `DOC/Chapter11/`: 도메인 Fine-tuning — Custom Labels & Face Collection
 - `docker/video-pathing/README.md`: YOLOv9 + ByteTrack 기반 Video People Pathing 대체 서비스
+- [`server-py/README.md`](./server-py/README.md): `server/`(Node.js)와 동일한 기능의 Python 포팅 모듈 + Docker 실행 가이드
 - [부록: 로컬 실행 가이드](#원문-readme2md--로컬-실행-가이드)
 - [부록: S3 퍼블릭 접근/라이프사이클](#원문-readme3md--s3-퍼블릭-접근--lifecycle-실습-정리)
 - [부록: IAM Principal/AssumeRole](#원문-readme4md--iam-핵심-개념-정리-principal-vs-assumerole)
@@ -41,14 +117,16 @@
 │  │  ├─ compareUploadedFacesHandler.js # Lambda: 웹 업로드 이미지 비교
 │  │  ├─ detectTextHandler.js         # Lambda: 텍스트 감지
 │  │  ├─ faceCollectionHandler.js     # Lambda: Face Collection CRUD + 검색
-│  │  └─ customLabelsHandler.js       # Lambda: Custom Labels Fine-tuning
+│  │  ├─ customLabelsHandler.js       # Lambda: Custom Labels Fine-tuning
+│  │  └─ productMomentumHandler.js    # Lambda: 신제품 노출 모멘텀 분석(Object & Scene Detection)
 │  ├─ local/
 │  │  ├─ compareFacesLocal.js         # 로컬 실행용
 │  │  ├─ compareUploadedFacesLocal.js # 로컬 실행용
 │  │  ├─ detectTextLocal.js           # 로컬 실행용
 │  │  ├─ uploadFacesLocal.js          # 로컬 실행용
 │  │  ├─ faceCollectionLocal.js       # Face Collection 로컬 실행용
-│  │  └─ customLabelsLocal.js         # Custom Labels 로컬 실행용
+│  │  ├─ customLabelsLocal.js         # Custom Labels 로컬 실행용
+│  │  └─ productMomentumLocal.js      # 신제품 노출 모멘텀 분석 로컬 실행용
 │  ├─ training/
 │  │  └─ domain/                      # 도메인 학습 이미지 + manifest 예시
 │  ├─ upload.js                # 로컬 실행용 업로드 엔트리
@@ -106,6 +184,7 @@ npm install
 npm run upload:faces
 npm run compare:faces
 npm run extract
+npm run lambda:product-momentum:local
 ```
 
 - 이 저장소의 Node.js 스크립트는 Linux/WSL 런타임 기준으로 정리되어 있습니다.
@@ -115,6 +194,7 @@ npm run extract
 - `upload:faces`: `training/face1~6.png` 경로로 S3 업로드
 - `compare:faces`: face1~6를 조합 비교하여 유사도 출력
 - `extract`: `sample.png` 텍스트 검출
+- `lambda:product-momentum:local`: 로컬 샘플 이미지를 시간순 소셜/영상 프레임으로 가정해 `DetectLabels` 기반 신제품 노출 모멘텀(노출 빈도 + 참여도 가중 + 상승/하락 추세)을 계산
 
 ---
 
@@ -152,6 +232,35 @@ aws configure list
 
 - **이미지 유사성 비교**: source/target 이미지를 업로드해 Node.js BE API가 Rekognition `CompareFaces` 호출
 - **텍스트 추출**: 단일 이미지를 업로드해 Node.js BE API가 Rekognition `DetectText` 호출
+- **신제품 노출 모멘텀 분석** (`3) 신제품 노출 모멘텀 분석` 섹션): 시간순으로 여러 프레임 이미지를 업로드하고 워치리스트(예: `Smartphone, Cosmetics, Car`)를 입력하면, Node.js BE API가 각 프레임에 Rekognition `DetectLabels`(Object & Scene Detection)를 호출해 워치리스트 항목별 노출 횟수/비율, 참여도(engagement) 가중 노출 비중, 초반 대비 후반 노출 변화(모멘텀 추세: RISING/STABLE/DECLINING)와 0~100 모멘텀 점수를 계산합니다.
+  - API: `POST /api/product-momentum` (로컬) 또는 `POST {base}/product-momentum` (API Gateway)
+  - 요청 바디: `{ frames: [{ imageBase64, engagementScore? }], watchlist: string[], minConfidence? }`
+  - `frames`는 유튜브/틱톡/인스타그램 등에서 추출한 프레임을 시간순(오래된 → 최신)으로 전달한다고 가정하며, `engagementScore`(조회수/좋아요 등)를 함께 넘기면 노출 비중 계산에 반영됩니다.
+
+---
+
+## 4-1-1) Python 포팅 모듈 실행 (신규, Docker 지원)
+
+`server-py/`는 위 `server/`(Node.js) 모듈과 동일한 기능(얼굴 비교, 텍스트 추출, 신제품 노출 모멘텀
+분석, Face Collection, Custom Labels)을 제공하는 Python(FastAPI + boto3) 포팅 버전입니다.
+샘플 이미지와 웹 프런트엔드(`web/public`)는 `server/`의 것을 그대로 재사용하므로 두 모듈은 항상
+같은 저장소 안에서 함께 실행되어야 합니다.
+
+```bash
+# 로컬 실행
+cd server-py
+pip install -r requirements.txt
+cp .env.example .env   # AWS_REGION, S3_BUCKET_NAME 등 값 채우기
+python web/app.py      # http://localhost:3100
+
+# Docker 기반 실행
+cd server-py
+cp .env.example .env
+docker compose up --build   # http://localhost:3100
+```
+
+세부 구조 대응표, CLI 스크립트(`upload.py`/`compare.py`/`extract.py`) 사용법, Docker 빌드
+컨텍스트 설명은 [`server-py/README.md`](./server-py/README.md)를 참고하세요.
 
 ---
 
@@ -247,6 +356,7 @@ export LAMBDA_ROLE_ARN=arn:aws:iam::086015456585:role/rekognition-lambda-role
 - `rekognition-face-compare` (`lambda/compareFacesHandler.handler`)
 - `rekognition-face-compare-upload` (`lambda/compareUploadedFacesHandler.handler`)
 - `rekognition-text-detect` (`lambda/detectTextHandler.handler`)
+- `rekognition-product-momentum` (`lambda/productMomentumHandler.handler`)
 
 ---
 ```
@@ -351,6 +461,7 @@ aws lambda wait function-updated \
 - `LAMBDA_COMPARE_FUNCTION`: 샘플 face1~6 비교 함수명 기본값
 - `LAMBDA_COMPARE_UPLOAD_FUNCTION`: 웹 업로드 이미지 비교 함수명 기본값
 - `LAMBDA_TEXT_FUNCTION`: 웹 텍스트 추출 함수명 기본값
+- `LAMBDA_PRODUCT_MOMENTUM_FUNCTION`: 신제품 노출 모멘텀 분석 함수명 기본값
 
 ---
 

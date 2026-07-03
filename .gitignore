@@ -2,10 +2,17 @@
 
 .env
 /server/.env
+/server-py/.env
 
-/server/node_modules/
+**/node_modules/
 /lambda-backup*
 /DOC/*.mp4
 /models/
 /outputs/
 /sample-videos/
+
+.codex
+
+__pycache__/
+*.pyc
+/server-py/.venv/

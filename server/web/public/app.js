@@ -39,6 +39,7 @@ function updateApiSummary() {
   el.innerHTML = `
     <div class="api-row"><span class="api-label">얼굴 비교</span><code>${base}/compare</code></div>
     <div class="api-row"><span class="api-label">텍스트 추출</span><code>${base}/extract-text</code></div>
+    <div class="api-row"><span class="api-label">모멘텀 분석</span><code>${base}/product-momentum</code></div>
   `;
 }
 
@@ -346,6 +347,132 @@ document.getElementById('textForm').addEventListener('submit', async (e) => {
 });
 
 // =========================================================
+//  Product momentum form (Object & Scene Detection) — API Gateway 직접 호출
+// =========================================================
+
+const momentumFramesInput = document.getElementById('momentumFrames');
+const momentumFramePreview = document.getElementById('momentumFramePreview');
+
+momentumFramesInput.addEventListener('change', () => {
+  const files = Array.from(momentumFramesInput.files || []);
+  momentumFramePreview.innerHTML = files
+    .map((file, i) => `<span class="frame-chip">#${i + 1} ${escapeHtml(file.name)}</span>`)
+    .join('');
+});
+
+function momentumBadgeClass(trend) {
+  if (trend === 'RISING') return 'ok';
+  if (trend === 'DECLINING') return 'no';
+  return 'warn';
+}
+
+function momentumTrendLabel(trend) {
+  if (trend === 'RISING') return '상승 모멘텀';
+  if (trend === 'DECLINING') return '하락';
+  return '보합';
+}
+
+function renderMomentumResult(raw) {
+  const resultEl = document.getElementById('momentumResult');
+  const data = normalizeCompareResponse(raw);
+
+  if (!data || data.message) {
+    resultEl.innerHTML = `
+      <div class="card">
+        <span class="badge no">ERROR</span>
+        <div class="verdict">${data?.message || '알 수 없는 오류'}</div>
+        <details class="debug" open>
+          <summary>원본 응답(JSON)</summary>
+          <pre>${escapeHtml(JSON.stringify(raw, null, 2))}</pre>
+        </details>
+      </div>`;
+    return;
+  }
+
+  const report = Array.isArray(data.report) ? data.report : [];
+  const top = report[0];
+
+  resultEl.innerHTML = `
+    <div class="card">
+      <div class="verdict">
+        ${top
+          ? `가장 강한 노출 모멘텀: <strong>${escapeHtml(top.target)}</strong> (${momentumTrendLabel(top.momentumTrend)}, 점수 ${fmt(top.momentumScore, 1)})`
+          : '분석 결과가 없습니다.'}
+      </div>
+      <div class="kvs">
+        <div class="kv"><div class="k">분석 프레임 수</div><div class="v">${data.totalFrames ?? '-'}</div></div>
+        <div class="kv"><div class="k">워치리스트</div><div class="v">${(data.watchlist || []).length}</div></div>
+      </div>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Target</th><th>노출</th><th>노출율</th><th>참여도 가중</th>
+            <th>평균 신뢰도</th><th>모멘텀 변화</th><th>추세</th><th>모멘텀 점수</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${report.length
+            ? report.map((r) => `
+              <tr>
+                <td>${escapeHtml(r.target)}</td>
+                <td>${r.exposureCount}/${r.totalFrames}</td>
+                <td>${fmt(r.exposureRate, 1)}%</td>
+                <td>${fmt(r.weightedExposureShare, 1)}%</td>
+                <td>${fmt(r.avgConfidence)}%</td>
+                <td>${r.momentumDelta > 0 ? '+' : ''}${fmt(r.momentumDelta, 1)}%p</td>
+                <td><span class="badge ${momentumBadgeClass(r.momentumTrend)}">${momentumTrendLabel(r.momentumTrend)}</span></td>
+                <td>${fmt(r.momentumScore, 1)}</td>
+              </tr>`).join('')
+            : '<tr><td colspan="8">워치리스트 항목이 감지되지 않았습니다.</td></tr>'}
+        </tbody>
+      </table>
+      <details class="debug">
+        <summary>원본 응답(JSON)</summary>
+        <pre>${escapeHtml(JSON.stringify(data, null, 2))}</pre>
+      </details>
+    </div>`;
+}
+
+document.getElementById('momentumForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  try {
+    setStatus('momentumStatus', '분석 중...');
+    document.getElementById('momentumResult').innerHTML = '<div class="card">분석 중...</div>';
+
+    const files = Array.from(momentumFramesInput.files || []);
+    if (files.length === 0) throw new Error('프레임 이미지를 하나 이상 선택하세요.');
+
+    const watchlist = document
+      .getElementById('momentumWatchlist').value
+      .split(',')
+      .map((s) => s.trim())
+      .filter(Boolean);
+    if (watchlist.length === 0) throw new Error('워치리스트를 하나 이상 입력하세요.');
+
+    // 파일 선택 순서를 그대로 시간순 프레임 순서로 사용합니다.
+    const frames = await Promise.all(
+      files.map(async (file, index) => ({
+        imageBase64: await fileToBase64(file),
+        // 데모용 가중치: 뒤로 갈수록(최신에 가까울수록) 참여도가 크다고 가정합니다.
+        engagementScore: index + 1,
+      })),
+    );
+
+    const result = await postJson(`${getApiBase()}/product-momentum`, {
+      frames,
+      watchlist,
+      minConfidence: Number(document.getElementById('momentumMinConfidence').value || 60),
+    });
+
+    renderMomentumResult(result);
+    setStatus('momentumStatus', '');
+  } catch (err) {
+    renderMomentumResult({ message: err.message, detail: err.payload || null });
+    setStatus('momentumStatus', '오류 발생');
+  }
+});
+
+// =========================================================
 //  Resize & init
 // =========================================================
 
@@ -358,3 +485,5 @@ window.addEventListener('resize', () => {
 updateApiSummary();
 document.getElementById('compareResult').innerHTML =
   '<div class="card">이미지를 선택하면 결과가 여기에 표시됩니다.</div>';
+document.getElementById('momentumResult').innerHTML =
+  '<div class="card">프레임 이미지와 워치리스트를 입력하면 결과가 여기에 표시됩니다.</div>';

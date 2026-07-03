@@ -227,6 +227,7 @@ button:hover { background: var(--blue-2); }
 
 .badge.ok { background: var(--good-bg); border: 1px solid var(--good-br); }
 .badge.no { background: var(--bad-bg); border: 1px solid var(--bad-br); }
+.badge.warn { background: #fffbeb; border: 1px solid #fbbf24; }
 
 .verdict { margin-top: 10px; font-size: 15px; font-weight: 700; }
 
@@ -594,3 +595,22 @@ pre {
 }
 .text-empty { color: var(--muted); }
 .text-error { color: #dc2626; }
+
+/* ---- Product momentum result ---- */
+.momentum-form { margin-top: 12px; }
+
+.frame-preview {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.frame-chip {
+  background: #f1f3f4;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-size: 12px;
+  color: var(--muted);
+}

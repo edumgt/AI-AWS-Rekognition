@@ -15,6 +15,7 @@ LAMBDA_COMPARE_UPLOAD_FUNCTION="${LAMBDA_COMPARE_UPLOAD_FUNCTION:-rekognition-fa
 LAMBDA_TEXT_FUNCTION="${LAMBDA_TEXT_FUNCTION:-rekognition-text-detect}"
 LAMBDA_FACE_COLLECTION_FUNCTION="${LAMBDA_FACE_COLLECTION_FUNCTION:-rekognition-face-collection}"
 LAMBDA_CUSTOM_LABELS_FUNCTION="${LAMBDA_CUSTOM_LABELS_FUNCTION:-rekognition-custom-labels}"
+LAMBDA_PRODUCT_MOMENTUM_FUNCTION="${LAMBDA_PRODUCT_MOMENTUM_FUNCTION:-rekognition-product-momentum}"
 LAMBDA_TIMEOUT="${LAMBDA_TIMEOUT:-30}"
 LAMBDA_MEMORY_SIZE="${LAMBDA_MEMORY_SIZE:-256}"
 
@@ -68,6 +69,7 @@ Environment variables:
   LAMBDA_TEXT_FUNCTION  DetectText Lambda function name
   LAMBDA_FACE_COLLECTION_FUNCTION  Face Collection Lambda function name
   LAMBDA_CUSTOM_LABELS_FUNCTION    Custom Labels Lambda function name
+  LAMBDA_PRODUCT_MOMENTUM_FUNCTION Product Momentum (Object & Scene Detection) Lambda function name
   CUSTOM_LABELS_PROJECT            Custom Labels project name
   CUSTOM_LABELS_VERSION_NAME       Model version name (default: timestamp)
   CUSTOM_LABELS_MANIFEST_S3_URI    S3 URI of the training manifest file
@@ -176,6 +178,7 @@ package_lambda() {
   local text_zip="${WORK_DIR}/lambda-text.zip"
   local face_collection_zip="${WORK_DIR}/lambda-face-collection.zip"
   local custom_labels_zip="${WORK_DIR}/lambda-custom-labels.zip"
+  local product_momentum_zip="${WORK_DIR}/lambda-product-momentum.zip"
 
   log "Packaging Lambda source files"
   (
@@ -190,9 +193,10 @@ package_lambda() {
     zip -qr "../${text_zip}" lambda/detectTextHandler.js src node_modules package.json package-lock.json
     zip -qr "../${face_collection_zip}" lambda/faceCollectionHandler.js src node_modules package.json package-lock.json
     zip -qr "../${custom_labels_zip}" lambda/customLabelsHandler.js src node_modules package.json package-lock.json
+    zip -qr "../${product_momentum_zip}" lambda/productMomentumHandler.js src node_modules package.json package-lock.json
   )
 
-  log "Packaged: ${upload_zip}, ${compare_zip}, ${compare_upload_zip}, ${text_zip}, ${face_collection_zip}, ${custom_labels_zip}"
+  log "Packaged: ${upload_zip}, ${compare_zip}, ${compare_upload_zip}, ${text_zip}, ${face_collection_zip}, ${custom_labels_zip}, ${product_momentum_zip}"
 }
 
 upsert_lambda() {
@@ -244,6 +248,7 @@ deploy_lambda() {
   upsert_lambda "${LAMBDA_TEXT_FUNCTION}" "lambda/detectTextHandler.handler" "${WORK_DIR}/lambda-text.zip"
   upsert_lambda "${LAMBDA_FACE_COLLECTION_FUNCTION}" "lambda/faceCollectionHandler.handler" "${WORK_DIR}/lambda-face-collection.zip"
   upsert_lambda "${LAMBDA_CUSTOM_LABELS_FUNCTION}" "lambda/customLabelsHandler.handler" "${WORK_DIR}/lambda-custom-labels.zip"
+  upsert_lambda "${LAMBDA_PRODUCT_MOMENTUM_FUNCTION}" "lambda/productMomentumHandler.handler" "${WORK_DIR}/lambda-product-momentum.zip"
 
   log "Lambda deploy completed"
 }

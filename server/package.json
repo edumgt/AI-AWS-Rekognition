@@ -16,7 +16,8 @@
     "lambda:compare:upload:local": "node -e \"const path=require('path'); require(path.join(path.dirname(process.env.npm_package_json),'src','runInWsl')).runNodeScript('local/compareUploadedFacesLocal.js')\"",
     "lambda:text:local": "node -e \"const path=require('path'); require(path.join(path.dirname(process.env.npm_package_json),'src','runInWsl')).runNodeScript('local/detectTextLocal.js')\"",
     "lambda:face-collection:local": "node -e \"const path=require('path'); require(path.join(path.dirname(process.env.npm_package_json),'src','runInWsl')).runNodeScript('local/faceCollectionLocal.js')\"",
-    "lambda:custom-labels:local": "node -e \"const path=require('path'); require(path.join(path.dirname(process.env.npm_package_json),'src','runInWsl')).runNodeScript('local/customLabelsLocal.js')\""
+    "lambda:custom-labels:local": "node -e \"const path=require('path'); require(path.join(path.dirname(process.env.npm_package_json),'src','runInWsl')).runNodeScript('local/customLabelsLocal.js')\"",
+    "lambda:product-momentum:local": "node -e \"const path=require('path'); require(path.join(path.dirname(process.env.npm_package_json),'src','runInWsl')).runNodeScript('local/productMomentumLocal.js')\""
   },
   "repository": {
     "type": "git",

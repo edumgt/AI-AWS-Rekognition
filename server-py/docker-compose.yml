@@ -1,0 +1,18 @@
+services:
+  rekognition-web-py:
+    build:
+      context: ..
+      dockerfile: server-py/Dockerfile
+    container_name: rekognition-web-py
+    # docker compose는 이 파일과 같은 위치의 .env를 자동으로 읽어 ${VAR} 치환에 사용합니다.
+    # server-py/.env.example을 복사해 server-py/.env를 만들어 두세요.
+    environment:
+      AWS_REGION: ${AWS_REGION:-ap-northeast-2}
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID:-}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY:-}
+      S3_BUCKET_NAME: ${S3_BUCKET_NAME:-}
+      SIMILARITY_THRESHOLD: ${SIMILARITY_THRESHOLD:-80}
+      WEB_HOST: 0.0.0.0
+      WEB_PORT: 3100
+    ports:
+      - '3100:3100'

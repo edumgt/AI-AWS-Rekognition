@@ -5,6 +5,7 @@ const path = require('path');
 const { ensureLinuxRuntime } = require('../src/runtimeGuard');
 const { handler: compareUploadedFacesHandler } = require('../lambda/compareUploadedFacesHandler');
 const { handler: detectTextHandler } = require('../lambda/detectTextHandler');
+const { handler: productMomentumHandler } = require('../lambda/productMomentumHandler');
 
 ensureLinuxRuntime('web');
 
@@ -86,7 +87,7 @@ async function runLambdaHandler(functionName, region, body) {
 async function dispatch(localHandler, lambdaFnKey, body) {
   const mode = body._mode || 'local';
   // Strip internal routing fields before forwarding to handlers
-  const { _mode, _awsRegion, _lambdaCompareFn, _lambdaTextFn, ...forwardBody } = body;
+  const { _mode, _awsRegion, _lambdaCompareFn, _lambdaTextFn, _lambdaProductMomentumFn, ...forwardBody } = body;
 
   // Inject AWS_REGION from the request when the env var is absent.
   // awsClients.js reads process.env.AWS_REGION lazily on first use,
@@ -171,6 +172,22 @@ const server = http.createServer(async (req, res) => {
       const apiResult = await dispatch(
         detectTextHandler,
         '_lambdaTextFn',
+        body,
+      );
+      return sendJson(res, apiResult.statusCode, apiResult.body);
+    }
+
+    if (req.method === 'POST' && req.url === '/api/product-momentum') {
+      const body = await parseRequestBody(req);
+      if (!Array.isArray(body.frames) || body.frames.length === 0) {
+        return sendJson(res, 400, { message: 'frames 배열이 필요합니다.' });
+      }
+      if (!Array.isArray(body.watchlist) || body.watchlist.length === 0) {
+        return sendJson(res, 400, { message: 'watchlist 배열이 필요합니다.' });
+      }
+      const apiResult = await dispatch(
+        productMomentumHandler,
+        '_lambdaProductMomentumFn',
         body,
       );
       return sendJson(res, apiResult.statusCode, apiResult.body);

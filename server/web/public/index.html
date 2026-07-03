@@ -13,7 +13,7 @@
           <div>
             <h1>AWS 003 Rekognition Web Demo</h1>
             <p class="subtitle">
-              얼굴 유사도 비교 + 텍스트 추출 — API Gateway → Lambda → Rekognition
+              얼굴 유사도 비교 + 텍스트 추출 + 신제품 노출 모멘텀 분석 — API Gateway → Lambda → Rekognition
             </p>
           </div>
           <button class="settings-btn" id="settingsBtn" type="button" aria-label="설정 열기">
@@ -88,6 +88,40 @@
         </form>
 
         <div id="textResult" class="text-result"></div>
+      </section>
+
+      <section>
+        <div class="section-head">
+          <h2>3) 신제품 노출 모멘텀 분석 (Object &amp; Scene Detection)</h2>
+          <p class="hint">
+            유튜브/틱톡/인스타그램 등에서 시간순으로 추출한 프레임 이미지를 업로드하면,
+            Rekognition DetectLabels로 프레임별 객체·장면을 감지해 워치리스트 항목의
+            노출 빈도와 초반 대비 후반 노출 변화(모멘텀)를 계산합니다.
+          </p>
+        </div>
+
+        <form id="momentumForm" class="momentum-form">
+          <label class="control">
+            <span>프레임 이미지 (시간순으로 여러 장 선택)</span>
+            <input id="momentumFrames" type="file" accept="image/*" multiple required />
+          </label>
+          <div id="momentumFramePreview" class="frame-preview"></div>
+
+          <div class="controls">
+            <label class="control">
+              <span>워치리스트 (쉼표로 구분, 예: Smartphone, Cosmetics, Car)</span>
+              <input id="momentumWatchlist" type="text" placeholder="Smartphone, Cosmetics, Car" required />
+            </label>
+            <label class="control">
+              <span>Min Confidence</span>
+              <input id="momentumMinConfidence" type="number" value="60" min="0" max="100" />
+            </label>
+            <button id="btnMomentum" type="submit">모멘텀 분석</button>
+            <span id="momentumStatus" class="status"></span>
+          </div>
+        </form>
+
+        <div id="momentumResult" class="result"></div>
       </section>
     </main>
 
